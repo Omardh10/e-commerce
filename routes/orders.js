@@ -33,8 +33,6 @@ router.post('/', verifytoken, asynchandler(async (req, res) => {
         totalprice += product.price * item.quantity
     }
 
-    // console.log(getorder);
-
     let neworder = new Order({
         address: req.body.address,
         products: req.body.products,

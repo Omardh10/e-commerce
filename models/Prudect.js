@@ -22,26 +22,30 @@ const Prudectschema = new mongoose.Schema({
         },
         required: true
     },
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     },
-    username:{
-        type:String,
-        required:true
+    username: {
+        type: String,
+        required: true
     },
     price: {
         type: Number,
         required: true
+    },
+    stock: {
+        type: Number,
+        default: 0
     },
     categoryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category',
         required: true
     },
-    category:{
-        type:String,
-        required:true
+    category: {
+        type: String,
+        required: true
     },
     rating: {
         type: Number,
@@ -76,7 +80,8 @@ const validateupdatepro = (obj) => {
         price: joi.number(),
         categoryId: joi.string(),
         rating: joi.number(),
-        isfatured: joi.bool()
+        isfatured: joi.bool(),
+        stock:joi.number()
     })
     return schema.validate(obj)
 }

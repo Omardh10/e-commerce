@@ -10,10 +10,12 @@ const { RemoveImage, UploadImage } = require('../utils/cloudinary');
 const { User } = require('../models/User');
 const { Category } = require('../models/Category');
 
+/*** this is code to get all products from the database **/
+
 router.get('/', asynchandler(async (req, res) => {
     const query = req.query;
-    const limit = query.limit ;
-    const page = query.page ;
+    const limit = query.limit;
+    const page = query.page;
     const category = query.category;
     const skip = (page - 1) * limit;
     let prudects;
@@ -34,7 +36,7 @@ router.get('/', asynchandler(async (req, res) => {
 
 }))
 
-/*******/
+/*** thi is code to get a specific product from the database **/
 
 router.get('/:id', asynchandler(async (req, res) => {
     const prudect = await Prudect.findById(req.params.id);
@@ -44,7 +46,7 @@ router.get('/:id', asynchandler(async (req, res) => {
     res.status(200).json({ status: "success", prudect }).populate("categoryId")
 }))
 
-/******/
+/*** this is code to add product in database **/
 
 router.post('/', verifytokenandisadmin, uploadphoto.single('image'), asynchandler(async (req, res) => {
     if (!req.file) {
@@ -77,9 +79,10 @@ router.post('/', verifytokenandisadmin, uploadphoto.single('image'), asynchandle
     fs.unlinkSync(pathimg);
 }))
 
-/*****/
+/*** this is code to update the product in database **/
 
 router.patch('/:id', verifytokenandisadmin, asynchandler(async (req, res) => {
+    const { title, description, price, categoryId, rating, isfatured, stock } = req.body
     const { error } = validateupdatepro(req.body);
     if (error) {
         return res.status(404).json({ message: error.details[0].message })
@@ -90,18 +93,19 @@ router.patch('/:id', verifytokenandisadmin, asynchandler(async (req, res) => {
     }
     const updateprudect = await Prudect.findByIdAndUpdate({ _id: req.params.id }, {
         $set: {
-            title: req.body.title,
-            description: req.body.description,
-            price: req.body.price,
-            categoryId: req.body.categoryId,
-            rating: req.body.rating,
-            isfatured: req.body.isfatured,
+            title,
+            description,
+            price,
+            categoryId,
+            rating,
+            isfatured,
+            stock
         }
     }, { new: true })
     res.status(202).json({ status: "success", updateprudect })
 }))
 
-/*****/
+/*** this is code to the update the image for the product **/
 
 router.patch('/upload-image/:id', verifytokenandisadmin, uploadphoto.single('image'), asynchandler(async (req, res) => {
 
@@ -124,7 +128,7 @@ router.patch('/upload-image/:id', verifytokenandisadmin, uploadphoto.single('ima
     fs.unlinkSync(pathimg);
 }))
 
-/******/
+/*** this is code to delete the peorduct from the database **/
 
 router.delete('/:id', asynchandler(async (req, res) => {
     const prudect = await Prudect.findById(req.params.id);
@@ -137,7 +141,7 @@ router.delete('/:id', asynchandler(async (req, res) => {
     }
 }))
 
-/******/
+/*** this is code add like to the product  **/
 
 router.patch('/like/:id', verifytoken, asynchandler(async (req, res) => {
     const product = await Prudect.findById(req.body.id);
