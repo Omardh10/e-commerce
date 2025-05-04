@@ -1,0 +1,22 @@
+
+
+
+      // const transporter=nodemailer.createTransport({
+    //     service:'gmail',
+    //     auth:{
+    //         user:
+    //         password:
+    //     }
+    // })
+    // const mailoptions={
+    //     from:,
+    //     to:newuser.email,
+    //     subject:"hello active your account",
+    //     text:`hello ${username}, this is your activation code ${activcode}`
+    // }
+
+    // const nodemailer = require('nodemailer');
+
+// const generateactivecode = () => {
+//     return Math.floor(100000 + Math.random() * 900000)
+// }

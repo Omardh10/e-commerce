@@ -1,75 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const asynchandler = require('express-async-handler');
-const { validatecreatecateg, Category } = require('../models/Category');
 const { verifytokenandisadmin } = require('../middlwer/allverify');
+const { DeleteCategory, UpdateCategory, NewCategory, GetSingleCategory, GetCategory } = require('../controller/CategoriesController');
 
-router.get('/', asynchandler(async (req, res) => {
-    const allcateg = await Category.find();
-    res.status(200).json({ status: "success", allcateg })
-}))
-router.get('/:id', asynchandler(async (req, res) => {
-    const categ = await Category.findById(req.params.id);
-    if (!categ) {
-        return res.status(404).json({ message: "this category not found" })
-    }
 
-    res.status(200).json({ status: "success", categ })
-}))
-router.post('/', verifytokenandisadmin, asynchandler(async (req, res) => {
-    const { error } = validatecreatecateg(req.body);
-    if (error) {
-        return res.status(404).json({ message: error.details[0].message })
-    }
-    const newcategory = new Category({
-        name: req.body.name,
-        color: req.body.color,
-        icon: req.body.icon
-    })
-    await newcategory.save();
-    res.status(201).json({ status: "success", newcategory });
-}))
-router.patch('/', verifytokenandisadmin, asynchandler(async (req, res) => {
-    const categ = await Category.findById(req.params.id);
-    if (!categ) {
-        return res.status(404).json({ message: "this category not found" })
-    }
-
-    const { error } = validatecreatecateg(req.body);
-    if (error) {
-        return res.status(404).json({ message: error.details[0].message })
-    }
-    const updatecategory = await Category.findByIdAndUpdate({ _id: req.params.id }, {
-        $set: {
-            name: req.body.name,
-            color: req.body.color,
-            icon: req.body.icon
-        }
-    })
-
-    res.status(201).json({ status: "success", updatecategory });
-}))
-router.delete('/:id', verifytokenandisadmin, asynchandler(async (req, res) => {
-    const categ = await Category.findById(req.params.id);
-    if (!categ) {
-        return res.status(404).json({ message: "this category not found" })
-    }
-    await Category.deleteOne({ _id: req.params.id })
-    res.status(202).json({ message: "deleted successfully" })
-}))
+// Get All Categories
+router.get('/', GetCategory)
 
 
 
+// get Single Category
+router.get('/:id',GetSingleCategory)
 
 
 
+// Post New Category
+router.post('/', verifytokenandisadmin, NewCategory)
 
 
 
+// Update Category
+router.patch('/', verifytokenandisadmin, UpdateCategory)
 
 
 
-
+// Delete Category
+router.delete('/:id', verifytokenandisadmin,DeleteCategory)
 
 
 
