@@ -2,6 +2,8 @@ const asynchandler = require('express-async-handler');
 const { validatecreateorder, Order } = require('../models/Order');
 const { Prudect } = require('../models/Prudect');
 
+
+
 const NewOrder = asynchandler(async (req, res) => {
 
     const { error } = validatecreateorder(req.body);
@@ -15,6 +17,7 @@ const NewOrder = asynchandler(async (req, res) => {
             return res.status(403).json({ message: "product not found" });
         }
         totalprice += product.price * item.quantity
+        product.stock -= item.quantity
     }
 
     let neworder = new Order({

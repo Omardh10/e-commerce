@@ -3,34 +3,36 @@ const { validateregister, User, validatelogin, validateupdateregister } = requir
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const RegisterUser=asynchandler(async(req,res)=>{
 
-     const { error } = validateregister(req.body)
-        if (error) {
-            return res.status(404).json({ message: error.details[0].message })
-        }
-        const olduser = await User.findOne({ email: req.body.email })
-        if (olduser) {
-            return res.status(404).json({ message: "this user already registered" })
-        }
-        const hashpassword = await bcrypt.hash(req.body.password, 10);
-        const newuser = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: hashpassword,
-            phonenumber: req.body.phonenumber,
-            city: req.body.city,
-            gender: req.body.gender,
-            birthdate: req.body.birthdate,
-        })
-        const token = jwt.sign({ id: newuser._id, isAdmin: newuser.isAdmin }, process.env.JWT_SECRET_KEY)
-        newuser.token = token;
-        await newuser.save();
-    
-        res.status(201).json({ status: "success", newuser })
+
+const RegisterUser = asynchandler(async (req, res) => {
+
+    const { error } = validateregister(req.body)
+    if (error) {
+        return res.status(404).json({ message: error.details[0].message })
+    }
+    const olduser = await User.findOne({ email: req.body.email })
+    if (olduser) {
+        return res.status(404).json({ message: "this user already registered" })
+    }
+    const hashpassword = await bcrypt.hash(req.body.password, 10);
+    const newuser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashpassword,
+        phonenumber: req.body.phonenumber,
+        city: req.body.city,
+        gender: req.body.gender,
+        birthdate: req.body.birthdate,
+    })
+    const token = jwt.sign({ id: newuser._id, isAdmin: newuser.isAdmin }, process.env.JWT_SECRET_KEY)
+    newuser.token = token;
+    await newuser.save();
+
+    res.status(201).json({ status: "success", newuser })
 })
 
-const LoginUser=asynchandler(async(req,res)=>{
+const LoginUser = asynchandler(async (req, res) => {
 
     const { email, password } = req.body;
     const { error } = validatelogin(req.body);
@@ -53,7 +55,7 @@ const LoginUser=asynchandler(async(req,res)=>{
     }
 })
 
-const UpdateUser=asynchandler(async(req,res)=>{
+const UpdateUser = asynchandler(async (req, res) => {
 
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -86,7 +88,7 @@ const UpdateUser=asynchandler(async(req,res)=>{
     res.status(201).json({ status: "success", updateuser })
 })
 
-const DeleteUser=asynchandler(async(req,res)=>{
+const DeleteUser = asynchandler(async (req, res) => {
 
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -96,25 +98,25 @@ const DeleteUser=asynchandler(async(req,res)=>{
     res.status(200).json({ message: "deleted seccussfully" })
 })
 
-const GetUsers=asynchandler(async(req,res)=>{
+const GetUsers = asynchandler(async (req, res) => {
 
     const users = await User.find();
     res.status(200).json({ status: "success", users })
 })
 
-const GetSingleUser=asynchandler(async(req,res)=>{
+const GetSingleUser = asynchandler(async (req, res) => {
 
-     const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(400).json({ message: "user not found" })
-        }
-    
-        res.status(200).json({ status: "success", user })
+    const user = await User.findById(req.params.id);
+    if (!user) {
+        return res.status(400).json({ message: "user not found" })
+    }
+
+    res.status(200).json({ status: "success", user })
 })
 
 
 
-module.exports={
+module.exports = {
     RegisterUser,
     LoginUser,
     UpdateUser,

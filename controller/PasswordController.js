@@ -3,7 +3,9 @@ const { User } = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const ForgotPassword=asynchandler(async(req,res)=>{
+
+
+const ForgotPassword = asynchandler(async (req, res) => {
 
     const user = await User.findOne({ email: req.body.email })
     if (!user) {
@@ -23,8 +25,8 @@ const ForgotPassword=asynchandler(async(req,res)=>{
 })
 
 
-const ResetPassword=asynchandler(async(req,res)=>{
-    
+const ResetPassword = asynchandler(async (req, res) => {
+
     const user = await User.findOne({ email: req.body.email })
     if (!user) {
         return res.status(403).json({ message: "user not found" });
@@ -46,7 +48,7 @@ const ResetPassword=asynchandler(async(req,res)=>{
 
 
 
-module.exports={
+module.exports = {
     ForgotPassword,
     ResetPassword
 }

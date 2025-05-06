@@ -81,7 +81,7 @@ const validateupdatepro = (obj) => {
         categoryId: joi.string(),
         rating: joi.number(),
         isfatured: joi.bool(),
-        stock:joi.number()
+        stock: joi.number()
     })
     return schema.validate(obj)
 }
