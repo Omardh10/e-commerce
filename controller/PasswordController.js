@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 
-
+/*** forgot password */
 const ForgotPassword = asynchandler(async (req, res) => {
 
     const user = await User.findOne({ email: req.body.email })
@@ -24,7 +24,7 @@ const ForgotPassword = asynchandler(async (req, res) => {
     }
 })
 
-
+/*** reset password */
 const ResetPassword = asynchandler(async (req, res) => {
 
     const user = await User.findOne({ email: req.body.email })
