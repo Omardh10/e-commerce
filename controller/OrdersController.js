@@ -56,17 +56,50 @@ const GetSingleOrder = asynchandler(async (req, res) => {
 /*** update order */
 const UpdateOrder = asynchandler(async (req, res) => {
 
-    let order = await Order.findById(req.params.id)
+   let order = await Order.findById(req.params.id);
     if (!order) {
-        return res.status(404).json({ message: "this order not found" })
-    } else {
-        if (req.user.id === order.user.toString()) {
-            order = await Order.findByIdAndUpdate({ _id: req.params.id }, { $set: { ...req.body } }, { new: true })
-            return res.status(200).json({ status: "success", order });
-        } else {
-            return res.status(200).json({ message: "not allwod only user" });
-        }
+        return res.status(404).json({ message: "Order not found" });
     }
+
+    if (req.user.id !== order.user.toString()) {
+        return res.status(403).json({ message: "Not allowed. Only the order owner can update this order" });
+    }
+
+    if (req.body.products) {
+        let totalPrice = 0;
+
+        for (let item of order.products) {
+            const product = await Prudect.findById(item.product.toString());
+            if (product) {
+                product.stock += item.quantity;
+                await product.save();
+            }
+        }
+
+        for (let item of req.body.products) {
+            const product = await Prudect.findById(item.product.toString());
+            if (!product) {
+                return res.status(404).json({ message: `Product ${item.product} not found` });
+            }
+            if (product.stock < item.quantity) {
+                return res.status(400).json({ message: `Not enough stock for product ${product.name}` });
+            }
+            totalPrice += product.price * item.quantity;
+            product.stock -= item.quantity;
+            await product.save();
+        }
+
+        req.body.totalPrice = totalPrice;
+    }
+
+    const { user, ...updateData } = req.body;
+    order = await Order.findByIdAndUpdate(
+        req.params.id,
+        { $set: updateData },
+        { new: true }
+    );
+
+    res.status(200).json({ status: "success", order });
 })
 
 /*** delete order */
