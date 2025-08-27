@@ -62,13 +62,11 @@ const validateregister = (obj) => {
 const validateupdateregister = (obj) => {
     const schema = joi.object({
         username: joi.string().trim().min(3).max(100),
-        email: joi.string().trim().min(3).max(150).email(),
         password: joi.string().trim().min(3).max(100),
         phonenumber: joi.string().trim(),
         gender: joi.string(),
         city: joi.string().trim(),
         birthdate: joi.string()
-
     })
     return schema.validate(obj)
 }

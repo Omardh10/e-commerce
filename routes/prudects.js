@@ -26,7 +26,7 @@ router.patch('/upload-image/:id', verifytokenandisadmin, uploadphoto.single('ima
 
 
 // Delete Product
-router.delete('/:id', DeleteProduct)
+router.delete('/:id',verifytokenandisadmin, DeleteProduct)
 
 
 // Add && Dis Like
